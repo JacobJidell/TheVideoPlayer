@@ -46,13 +46,10 @@ class ControlView: UIView {
         super.prepareForInterfaceBuilder()
         roundCorners()
     }
-
-    private func roundCorners() {
-        self.layer.cornerRadius = 8
-    }
 }
 
 extension ControlView {
+    // MARK: - Update UI
     func setPlayPauseButtonIcon(with player: AVPlayer) {
         let buttonImage: UIImage?
         switch player.timeControlStatus {
@@ -100,12 +97,19 @@ extension ControlView {
         remainingTimeLabel.text = createTimeString(time: remainingInSeconds)
     }
 
+    private func roundCorners() {
+        self.layer.cornerRadius = 8
+    }
+
+    // MARK: - Private functions
+
     private func createTimeString(time: Float) -> String {
         let components = NSDateComponents()
         components.second = Int(max(0.0, time))
         return timeRemainingFormatter.string(from: components as DateComponents)!
     }
 
+    // MARK: - IBActions
     @IBAction func didPressPlay(_ sender: UIButton) {
         delegate?.didPressPlayPause()
     }

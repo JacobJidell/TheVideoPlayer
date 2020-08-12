@@ -68,7 +68,6 @@ class ViewController: UIViewController {
         controlView.delegate = self
         setupAsset()
         setupAirPlay()
-//        setupRemoteControls()
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -112,58 +111,6 @@ class ViewController: UIViewController {
     private func setupAirPlay() {
         airplayContainerView.addSubview(routePicker)
     }
-    /**
-
-     */
-//    private func setupRemoteControls() {
-//        let commanderCenter = MPRemoteCommandCenter.shared()
-//
-//        // Add handler for the play command
-////        commanderCenter.playCommand.addTarget { [weak self] event in
-////            guard let self = self,
-////                self.player.timeControlStatus == .paused else {
-////                return .commandFailed
-////            }
-////            self.player.play()
-////            return .success
-////        }
-////
-////        commanderCenter.pauseCommand.addTarget { [weak self] event in
-////            guard let self = self else { return .commandFailed }
-////            guard
-////                self.player.timeControlStatus == .playing else {
-////                    print(self.player.timeControlStatus.rawValue)
-////                return .commandFailed
-////            }
-////            self.player.pause()
-////            return .success
-////        }
-//
-//        commanderCenter.togglePlayPauseCommand.addTarget { [weak self] event in
-//            guard let self = self else { return .commandFailed }
-//            if self.player.timeControlStatus == .playing {
-//                self.player.pause()
-//            } else {
-//                self.player.play()
-//            }
-//            return .success
-//        }
-//
-//        commanderCenter.
-//        commanderCenter.skipForwardCommand.addTarget { [weak self] event in
-//            guard let self = self else { return .commandFailed }
-//            return .success
-//        }
-//
-////        commanderCenter.skipForwardCommand.addTarget { [weak self] event in
-////            guard let self = self else { return }
-////        }
-////
-////        commanderCenter.skipForwardCommand.addTarget { [weak self] event in
-////            guard let self = self else { return }
-////        }
-//
-//    }
 
     private func setupAsset() {
         guard let url = URL(string: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4") else {
