@@ -272,13 +272,11 @@ extension ViewController: ControlDelegate {
     }
 
     func didPressForward() {
-        let newTime = getNewTime(.forward)
-        player.currentItem?.seek(to: newTime, completionHandler: nil)
+        player.currentItem?.seek(to: getNewTime(.forward), completionHandler: nil)
     }
 
     func didPressRewind() {
-        let newTime = getNewTime(.rewind)
-        player.currentItem?.seek(to: newTime, completionHandler: nil)
+        player.currentItem?.seek(to: getNewTime(.rewind), completionHandler: nil)
     }
 
     func didSlideTimer(with seconds: Double) {

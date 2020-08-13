@@ -14,10 +14,18 @@
 		4923C95124DD3F6100474A4F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4923C95024DD3F6100474A4F /* Assets.xcassets */; };
 		4923C95424DD3F6100474A4F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4923C95224DD3F6100474A4F /* LaunchScreen.storyboard */; };
 		4923C95F24DD3F6100474A4F /* TheVideoPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4923C95E24DD3F6100474A4F /* TheVideoPlayerTests.swift */; };
-		4923C97124DD4AC200474A4F /* Speed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4923C97024DD4AC200474A4F /* Speed.swift */; };
 		4923C97324DD4C6B00474A4F /* ControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4923C97224DD4C6B00474A4F /* ControlView.swift */; };
 		4993065424DD4F8100F46703 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4993065324DD4F8100F46703 /* PlayerView.swift */; };
 		4993065724DD865900F46703 /* PlayerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4993065624DD865900F46703 /* PlayerError.swift */; };
+		4993065A24E4127B00F46703 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4993065924E4127B00F46703 /* Configuration.swift */; };
+		4993065D24E412EA00F46703 /* NowPlayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4993065C24E412EA00F46703 /* NowPlayable.swift */; };
+		4993066024E4139900F46703 /* NowPlayableMetaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4993065F24E4139900F46703 /* NowPlayableMetaData.swift */; };
+		4993066224E414A800F46703 /* NowPlayableCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4993066124E414A800F46703 /* NowPlayableCommand.swift */; };
+		4993066424E41C8600F46703 /* NowPlayableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4993066324E41C8600F46703 /* NowPlayableError.swift */; };
+		4993066924E4293300F46703 /* NowPlayingBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4993066824E4293300F46703 /* NowPlayingBehavior.swift */; };
+		4993066B24E42A4D00F46703 /* ConfigurationAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4993066A24E42A4D00F46703 /* ConfigurationAsset.swift */; };
+		4993066E24E42FCB00F46703 /* AssetPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4993066D24E42FCB00F46703 /* AssetPlayer.swift */; };
+		4993067024E5277400F46703 /* ConfigCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4993066F24E5277400F46703 /* ConfigCommand.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,10 +50,18 @@
 		4923C95A24DD3F6100474A4F /* TheVideoPlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TheVideoPlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4923C95E24DD3F6100474A4F /* TheVideoPlayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheVideoPlayerTests.swift; sourceTree = "<group>"; };
 		4923C96024DD3F6100474A4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4923C97024DD4AC200474A4F /* Speed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Speed.swift; sourceTree = "<group>"; };
 		4923C97224DD4C6B00474A4F /* ControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlView.swift; sourceTree = "<group>"; };
 		4993065324DD4F8100F46703 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		4993065624DD865900F46703 /* PlayerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerError.swift; sourceTree = "<group>"; };
+		4993065924E4127B00F46703 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		4993065C24E412EA00F46703 /* NowPlayable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayable.swift; sourceTree = "<group>"; };
+		4993065F24E4139900F46703 /* NowPlayableMetaData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayableMetaData.swift; sourceTree = "<group>"; };
+		4993066124E414A800F46703 /* NowPlayableCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayableCommand.swift; sourceTree = "<group>"; };
+		4993066324E41C8600F46703 /* NowPlayableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayableError.swift; sourceTree = "<group>"; };
+		4993066824E4293300F46703 /* NowPlayingBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingBehavior.swift; sourceTree = "<group>"; };
+		4993066A24E42A4D00F46703 /* ConfigurationAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationAsset.swift; sourceTree = "<group>"; };
+		4993066D24E42FCB00F46703 /* AssetPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetPlayer.swift; sourceTree = "<group>"; };
+		4993066F24E5277400F46703 /* ConfigCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigCommand.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,15 +103,14 @@
 		4923C94624DD3F5F00474A4F /* TheVideoPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				4993065524DD864D00F46703 /* Errors */,
+				4993065E24E4138B00F46703 /* Models */,
+				4923C95524DD3F6100474A4F /* Info.plist */,
 				4923C94724DD3F5F00474A4F /* AppDelegate.swift */,
 				4923C94924DD3F5F00474A4F /* SceneDelegate.swift */,
-				4923C97424DD4C8900474A4F /* Storyboards */,
-				4923C96F24DD4AB600474A4F /* Enums */,
-				4923C96E24DD4A5700474A4F /* Views */,
-				4923C97524DD4C9B00474A4F /* ViewControllers */,
 				4923C96924DD447700474A4F /* Resources */,
-				4923C95524DD3F6100474A4F /* Info.plist */,
+				4923C97424DD4C8900474A4F /* Storyboards */,
+				4993065824E4125600F46703 /* Utils */,
+				4923C96E24DD4A5700474A4F /* Views */,
 			);
 			path = TheVideoPlayer;
 			sourceTree = "<group>";
@@ -120,18 +135,11 @@
 		4923C96E24DD4A5700474A4F /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4923C97524DD4C9B00474A4F /* ViewControllers */,
 				4923C97224DD4C6B00474A4F /* ControlView.swift */,
 				4993065324DD4F8100F46703 /* PlayerView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		4923C96F24DD4AB600474A4F /* Enums */ = {
-			isa = PBXGroup;
-			children = (
-				4923C97024DD4AC200474A4F /* Speed.swift */,
-			);
-			path = Enums;
 			sourceTree = "<group>";
 		};
 		4923C97424DD4C8900474A4F /* Storyboards */ = {
@@ -151,12 +159,52 @@
 			path = ViewControllers;
 			sourceTree = "<group>";
 		};
-		4993065524DD864D00F46703 /* Errors */ = {
+		4993065824E4125600F46703 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				4993066C24E42F9700F46703 /* Player */,
+				4993066624E4288F00F46703 /* Configuration */,
+				4993066524E4280A00F46703 /* NowPlayable */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		4993065E24E4138B00F46703 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		4993066524E4280A00F46703 /* NowPlayable */ = {
+			isa = PBXGroup;
+			children = (
+				4993065C24E412EA00F46703 /* NowPlayable.swift */,
+				4993066124E414A800F46703 /* NowPlayableCommand.swift */,
+				4993065F24E4139900F46703 /* NowPlayableMetaData.swift */,
+				4993066324E41C8600F46703 /* NowPlayableError.swift */,
+				4993066824E4293300F46703 /* NowPlayingBehavior.swift */,
+			);
+			path = NowPlayable;
+			sourceTree = "<group>";
+		};
+		4993066624E4288F00F46703 /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				4993065924E4127B00F46703 /* Configuration.swift */,
+				4993066A24E42A4D00F46703 /* ConfigurationAsset.swift */,
+				4993066F24E5277400F46703 /* ConfigCommand.swift */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		4993066C24E42F9700F46703 /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				4993066D24E42FCB00F46703 /* AssetPlayer.swift */,
 				4993065624DD865900F46703 /* PlayerError.swift */,
 			);
-			path = Errors;
+			path = Player;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -261,12 +309,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				4923C94C24DD3F5F00474A4F /* ViewController.swift in Sources */,
+				4993067024E5277400F46703 /* ConfigCommand.swift in Sources */,
+				4993066924E4293300F46703 /* NowPlayingBehavior.swift in Sources */,
+				4993066224E414A800F46703 /* NowPlayableCommand.swift in Sources */,
 				4923C94824DD3F5F00474A4F /* AppDelegate.swift in Sources */,
 				4923C94A24DD3F5F00474A4F /* SceneDelegate.swift in Sources */,
+				4993065D24E412EA00F46703 /* NowPlayable.swift in Sources */,
 				4993065424DD4F8100F46703 /* PlayerView.swift in Sources */,
+				4993066424E41C8600F46703 /* NowPlayableError.swift in Sources */,
 				4993065724DD865900F46703 /* PlayerError.swift in Sources */,
+				4993066E24E42FCB00F46703 /* AssetPlayer.swift in Sources */,
+				4993066B24E42A4D00F46703 /* ConfigurationAsset.swift in Sources */,
+				4993066024E4139900F46703 /* NowPlayableMetaData.swift in Sources */,
+				4993065A24E4127B00F46703 /* Configuration.swift in Sources */,
 				4923C97324DD4C6B00474A4F /* ControlView.swift in Sources */,
-				4923C97124DD4AC200474A4F /* Speed.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
