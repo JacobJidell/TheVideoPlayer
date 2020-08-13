@@ -15,6 +15,8 @@ protocol Configuration {
     var allowsExternalPlayback: Bool { get set }
     // Assets
     var assets: [ConfigurationAsset] { get set }
+    // Collection of commands
+    var commandCollections: [ConfigCommandCollection] { get set }
 }
 
 struct PlayerConfiguration: Configuration {
@@ -23,13 +25,14 @@ struct PlayerConfiguration: Configuration {
     let behavior: NowPlayable
 
     var allowsExternalPlayback = true
-    // Assets
     var assets: [ConfigurationAsset] = []
+    var commandCollections: [ConfigCommandCollection] = []
 
     // Initialize a new configuration
     init(behavior: NowPlayable = NowPlayableBehavior.shared) {
         self.behavior = behavior
         self.assets = defaultAssets
+        self.commandCollections = defaultCommandCollections
     }
 }
 
@@ -39,11 +42,21 @@ extension PlayerConfiguration {
             fatalError("Video was not found")
         }
         let metaData = NowPlayableMetaData(assetURL: url, title: "Big Buck Bunny")
+
+        
         return [ConfigurationAsset(metaData)]
     }
 
-    private var collectionCommands: [String] {
-//        let collection = 
-        return [String]()
+    private var defaultCommandCollections: [ConfigCommandCollection] {
+        let commands = [
+            ConfigCommand(.play),
+            ConfigCommand(.pause),
+            ConfigCommand(.skipBackward),
+            ConfigCommand(.skipForward),
+        ]
+        let commandsCollection = [
+            ConfigCommandCollection(commands: commands)
+        ]
+        return commandsCollection
     }
 }

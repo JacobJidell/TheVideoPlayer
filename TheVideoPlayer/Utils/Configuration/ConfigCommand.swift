@@ -8,10 +8,19 @@
 
 import Foundation
 
-class ConfigCommand {
+struct ConfigCommand {
     let command: NowPlayableCommand
 
     init(_ command: NowPlayableCommand) {
         self.command = command
+    }
+}
+
+struct ConfigCommandCollection {
+
+    let commands: [ConfigCommand]
+
+    init(commands: [ConfigCommand]) {
+        self.commands = commands
     }
 }

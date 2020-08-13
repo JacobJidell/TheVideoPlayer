@@ -42,6 +42,8 @@ class ViewController: UIViewController {
 
     let player = AVPlayer()
 
+    var assetPlayer: AssetPlayer!
+
     // MARK: - Video key value observers
 
     private var playerTimerControlStatusObserver: NSKeyValueObservation?
@@ -66,8 +68,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         controlView.delegate = self
-        setupAsset()
+//        setupAsset()
         setupAirPlay()
+        setup()
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -104,6 +107,52 @@ class ViewController: UIViewController {
 
 
     // MARK: - Setup
+
+    private func setup() {
+        do {
+            // Create an AssetPlayer
+            assetPlayer = try AssetPlayer()
+
+            // Add observers
+
+            assetPlayer.onTimeControlStatusUpdate = { [weak self] player in
+                guard let self = self else { return }
+                /**
+                 Configure the image for the `playPauseButton` depending on the
+                 players' property `timeControlStatus`.
+                 */
+                self.controlView.setPlayPauseButtonIcon(with: player)
+            }
+
+            assetPlayer.onPeriodicTimeUpdate = { [weak self] (time, player) in
+                guard let self = self else { return }
+                self.controlView.updateUIForSlider(with: time, player: player)
+            }
+
+            assetPlayer.onFastForwardUpdate = { [weak self] playable in
+                guard let self = self else { return }
+                self.controlView.fastForwardButton.isEnabled = playable
+
+            }
+
+            assetPlayer.onReverseUpdate = { [weak self] playable in
+                guard let self = self else { return }
+                self.controlView.reverseButton.isEnabled = playable
+            }
+
+            assetPlayer.onStatusUpdate = { [weak self] player in
+                guard let self = self else { return }
+                // Configure the UI for the controlView
+                self.controlView.updateUIForControl(with: player)
+            }
+
+            // Start session
+            try assetPlayer.setupSession()
+        } catch {
+            print(error)
+            assetPlayer.removeAllHandlers()
+        }
+    }
 
     /**
      Adding the AVRoutePickerView to the containerView inside a stackView.
