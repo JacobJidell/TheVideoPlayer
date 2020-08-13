@@ -13,15 +13,17 @@ enum NowPlayableInterruption {
     case began, ended(Bool), failed(Error)
 }
 
-typealias InteruptionHandler = (NowPlayableInterruption) -> Void
+typealias InterruptionHandler = (NowPlayableInterruption) -> Void
 
 protocol NowPlayable: class {
     func handleConfiguration(commands: [NowPlayableCommand],
                              disableCommands: [NowPlayableCommand],
                              commandHandler: @escaping CommandHandler,
-                             interuptionHandler: @escaping InteruptionHandler) throws
+                             interruptionHandler: @escaping InterruptionHandler) throws
 
+    func handleNowPlayableItemChange(metadata: NowPlayableMetaData)
     func handleNowPlayingSessionStart() throws
+    func handleNowPlayingSessionEnd() throws
 }
 
 extension NowPlayable {

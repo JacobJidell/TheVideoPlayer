@@ -113,8 +113,17 @@ class ViewController: UIViewController {
             // Create an AssetPlayer
             assetPlayer = try AssetPlayer()
 
-            // Add observers
+            /**
+            Add/Replace the current player in the `playerView`.
+            The `AVPlayer` and `AVPlayerItem` are not a visible objects. Use the `AVPlayerLayer`
+            object to manage visual output.
+            */
+            playerView.player = assetPlayer.player
 
+            /**
+             Connect to the handlers. As soon an update occurs the corresponding
+             handler will be triggered.
+             */
             assetPlayer.onTimeControlStatusUpdate = { [weak self] player in
                 guard let self = self else { return }
                 /**
@@ -150,7 +159,6 @@ class ViewController: UIViewController {
             try assetPlayer.setupSession()
         } catch {
             print(error)
-            assetPlayer.removeAllHandlers()
         }
     }
 

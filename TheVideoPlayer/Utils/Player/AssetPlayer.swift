@@ -19,10 +19,11 @@ class AssetPlayer {
     }
 
     let player: AVPlayer
-
-    let behavior: NowPlayable
-
+    
+    private let behavior: NowPlayable
     private var playerState: PlayerState = .stopped
+    private let allMetaData: [NowPlayableMetaData]
+    private let playerItems: [AVPlayerItem]
 
     // Observers
     private var playerTimerControlStatusObserver: NSKeyValueObservation?
@@ -44,21 +45,29 @@ class AssetPlayer {
         // Set the configuration playable behavior.
         behavior = configuration.behavior
 
+        // Get the metaData from the configuration
+        allMetaData = configuration.assets.map { $0.metaData }
+
         // Get the assets from the configuration and create AVPlayerItems from the urlAssets.
-        let assets = configuration.assets.map { AVPlayerItem(asset: $0.urlAsset) }
-        guard let firstAsset = assets.first else {
+        playerItems = configuration.assets.map { AVPlayerItem(asset: $0.urlAsset) }
+        guard let firstItem = playerItems.first else {
             throw PlayerError.noAssetFound
         }
 
         // Create a AVPlayer and configure it for external playback.
-        self.player = AVPlayer(playerItem: firstAsset)
+        self.player = AVPlayer(playerItem: firstItem)
         self.player.allowsExternalPlayback = configuration.allowsExternalPlayback
 
+        var registeredCommands: [NowPlayableCommand] = []
+        configuration.commandCollections.forEach({
+            registeredCommands.append(contentsOf: $0.commands.compactMap({ $0.command }))
+        })
+
         // Configure player for Now Playing info and Remote Command Center behaviors.
-        try behavior.handleConfiguration(commands: [],
+        try behavior.handleConfiguration(commands: registeredCommands,
                                          disableCommands: [],
                                          commandHandler: handleCommand(command:event:),
-                                         interuptionHandler: handleInteruption(interuption:))
+                                         interruptionHandler: handleInterruption(interuption:))
     }
     /**
      Removes all current handlers
@@ -72,13 +81,16 @@ class AssetPlayer {
     }
 
     func setupSession() throws {
+        // Make sure there's a current item
         guard player.currentItem != nil else {
             throw PlayerError.noAssetFound
         }
-
+        // Setup Now Playing session
         try behavior.handleNowPlayingSessionStart()
-
+        // Creates observers
         addObservers()
+        // Starts the player
+        play()
     }
 
     private func addObservers() {
@@ -142,14 +154,29 @@ class AssetPlayer {
     }
 
     // MARK: - Interuptions
-    // typealias InteruptionHandler = (NowPlayableInterruption) -> Void
 
-    private func handleInteruption(interuption: NowPlayableInterruption) {
+    private func handleInterruption(interuption: NowPlayableInterruption) {
         switch interuption {
         case .began: ()
         case .ended( _): ()
         case .failed( _): ()
         }
+    }
+
+    // MARK: - Now Playing information
+
+    private func handlePlayerItemChange() {
+        guard playerState != .stopped else { return }
+
+        // Find the item and its' index
+        guard let item = player.currentItem else {
+            #warning("handle opt out")
+            return
+        }
+        guard let index = playerItems.firstIndex(where: { $0 == item }) else { return }
+
+        // Update Now Playing information
+        behavior.handleNowPlayableItemChange(metadata: allMetaData[index])
     }
 }
 
@@ -157,7 +184,17 @@ class AssetPlayer {
 
 extension AssetPlayer {
     private func play() {
+        switch playerState {
+        case .stopped:
+            playerState = .playing
+            player.play()
 
+            handlePlayerItemChange()
+        case .paused:
+            playerState = .playing
+            player.play()
+        case .playing: break
+        }
     }
 
     private func pause() {
