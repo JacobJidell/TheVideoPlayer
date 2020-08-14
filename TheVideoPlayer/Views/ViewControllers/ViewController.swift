@@ -41,6 +41,8 @@ class ViewController: UIViewController {
     override var shouldAutorotate: Bool { return shouldRotate }
 
     var assetPlayer: AssetPlayer!
+    var fadeOutTimer: Timer?
+    var tapGesture: UITapGestureRecognizer?
 
     // MARK: - Video key value observers
 
@@ -66,6 +68,58 @@ class ViewController: UIViewController {
 
         sender.setImage(UIImage(systemName: statusBarOrientation == .portrait ? "arrow.up.left.and.arrow.down.right" : "arrow.down.right.and.arrow.up.left"), for: .normal)
         shouldRotate.toggle()
+
+        if statusBarOrientation == .landscapeRight {
+            resetTimer()
+
+            let tap = UITapGestureRecognizer(target: self, action: #selector(toggleControls))
+            self.tapGesture = tap
+            self.playerView.addGestureRecognizer(tap)
+        } else {
+            if let tapGesture = tapGesture {
+                self.playerView.removeGestureRecognizer(tapGesture)
+                self.tapGesture = nil
+            }
+            showControls()
+            fadeOutTimer?.invalidate()
+            fadeOutTimer = nil
+        }
+    }
+
+    // MARK: - Timer & Controls
+
+    private func resetTimer() {
+        fadeOutTimer?.invalidate()
+        fadeOutTimer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(hideControls), userInfo: nil, repeats: false)
+    }
+
+    @objc
+    private func toggleControls() {
+        let isHidden = controlView.isHidden
+        if isHidden {
+            controlView.isHidden = false
+        }
+        controlView.fade(should: isHidden ? .show : .hide) { _ in
+            if !isHidden {
+                self.controlView.isHidden = true
+            }
+        }
+        
+        resetTimer()
+    }
+    // false
+    private func fade(visible: Bool) {
+        if visible {
+            self.controlView.isHidden = false
+        }
+
+        UIView.animate(withDuration: 0.3) {
+            self.controlView.alpha = visible ? 1 : 0
+        } completion: { _ in
+            if !visible {
+                self.controlView.isHidden = true
+            }
+        }
     }
 
 
@@ -128,6 +182,20 @@ class ViewController: UIViewController {
     // Adding the AVRoutePickerView to the containerView.
     private func setupAirPlay() {
         airplayContainerView.addSubview(routePicker)
+    }
+
+    // MARK: - UI
+
+    @objc
+    private func hideControls() {
+        controlView.fade(should: .hide) { _ in
+            self.controlView.isHidden = true
+        }
+    }
+
+    private func showControls() {
+        controlView.isHidden = false
+        controlView.alpha = 1
     }
 }
 

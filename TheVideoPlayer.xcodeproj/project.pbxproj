@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		491B270F24E68A7F0050C316 /* UIView+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491B270E24E68A7F0050C316 /* UIView+extensions.swift */; };
 		4923C94824DD3F5F00474A4F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4923C94724DD3F5F00474A4F /* AppDelegate.swift */; };
 		4923C94A24DD3F5F00474A4F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4923C94924DD3F5F00474A4F /* SceneDelegate.swift */; };
 		4923C94C24DD3F5F00474A4F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4923C94B24DD3F5F00474A4F /* ViewController.swift */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		491B270E24E68A7F0050C316 /* UIView+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+extensions.swift"; sourceTree = "<group>"; };
 		4923C94424DD3F5F00474A4F /* TheVideoPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheVideoPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4923C94724DD3F5F00474A4F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4923C94924DD3F5F00474A4F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -82,6 +84,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		491B270D24E68A6A0050C316 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				491B270E24E68A7F0050C316 /* UIView+extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		4923C93B24DD3F5F00474A4F = {
 			isa = PBXGroup;
 			children = (
@@ -103,6 +113,7 @@
 		4923C94624DD3F5F00474A4F /* TheVideoPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				491B270D24E68A6A0050C316 /* Extensions */,
 				4993065E24E4138B00F46703 /* Models */,
 				4923C95524DD3F6100474A4F /* Info.plist */,
 				4923C94724DD3F5F00474A4F /* AppDelegate.swift */,
@@ -314,6 +325,7 @@
 				4993066224E414A800F46703 /* NowPlayableCommand.swift in Sources */,
 				4923C94824DD3F5F00474A4F /* AppDelegate.swift in Sources */,
 				4923C94A24DD3F5F00474A4F /* SceneDelegate.swift in Sources */,
+				491B270F24E68A7F0050C316 /* UIView+extensions.swift in Sources */,
 				4993065D24E412EA00F46703 /* NowPlayable.swift in Sources */,
 				4993065424DD4F8100F46703 /* PlayerView.swift in Sources */,
 				4993066424E41C8600F46703 /* NowPlayableError.swift in Sources */,
