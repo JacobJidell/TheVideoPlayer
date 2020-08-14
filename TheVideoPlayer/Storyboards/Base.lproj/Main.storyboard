@@ -303,6 +303,7 @@
                         <outlet property="airplayContainerView" destination="Npr-1n-EH6" id="bUb-kz-fpJ"/>
                         <outlet property="controlView" destination="uZx-tK-sSD" id="fNT-wQ-r5a"/>
                         <outlet property="playerView" destination="7of-XQ-Ujr" id="2eU-Cp-26A"/>
+                        <outlet property="videoSettingsContainerView" destination="egB-NY-7Bo" id="RnS-yR-JD4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

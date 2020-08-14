@@ -166,7 +166,6 @@ class AssetPlayer {
     // MARK: - Now Playing information
 
     private func handlePlayerItemChange() {
-//        guard playerState != .stopped else { return }
         guard player.timeControlStatus != .paused else { return }
 
         // Find the item and its' index

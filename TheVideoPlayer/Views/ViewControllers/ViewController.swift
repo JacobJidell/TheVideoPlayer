@@ -14,6 +14,7 @@ import MediaPlayer
 class ViewController: UIViewController {
     @IBOutlet weak var playerView: PlayerView!
     // For airplay
+    @IBOutlet weak var videoSettingsContainerView: UIView!
     @IBOutlet weak var airplayContainerView: UIView!
     // For custom controllers
     @IBOutlet weak var controlView: ControlView!
@@ -98,30 +99,22 @@ class ViewController: UIViewController {
         let isHidden = controlView.isHidden
         if isHidden {
             controlView.isHidden = false
+            videoSettingsContainerView.isHidden = false
         }
         controlView.fade(should: isHidden ? .show : .hide) { _ in
             if !isHidden {
                 self.controlView.isHidden = true
             }
         }
+
+        videoSettingsContainerView.fade(should: isHidden ? .show : .hide) { _ in
+            if !isHidden {
+                self.videoSettingsContainerView.isHidden = true
+            }
+        }
         
         resetTimer()
     }
-    // false
-    private func fade(visible: Bool) {
-        if visible {
-            self.controlView.isHidden = false
-        }
-
-        UIView.animate(withDuration: 0.3) {
-            self.controlView.alpha = visible ? 1 : 0
-        } completion: { _ in
-            if !visible {
-                self.controlView.isHidden = true
-            }
-        }
-    }
-
 
     // MARK: - Setup
 
@@ -191,11 +184,17 @@ class ViewController: UIViewController {
         controlView.fade(should: .hide) { _ in
             self.controlView.isHidden = true
         }
+
+        videoSettingsContainerView.fade(should: .hide) { _ in
+            self.videoSettingsContainerView.isHidden = true
+        }
     }
 
     private func showControls() {
         controlView.isHidden = false
         controlView.alpha = 1
+        videoSettingsContainerView.isHidden = false
+        videoSettingsContainerView.alpha = 1
     }
 }
 
