@@ -23,33 +23,48 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SXh-XZ-UqY">
                                         <rect key="frame" x="0.0" y="10" width="365" height="44"/>
                                         <subviews>
-                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="XuL-4M-66G">
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="egB-NY-7Bo">
                                                 <rect key="frame" x="277" y="0.0" width="88" height="44"/>
                                                 <subviews>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Npr-1n-EH6">
-                                                        <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    </view>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aPw-BL-ChA">
-                                                        <rect key="frame" x="44" y="0.0" width="44" height="44"/>
-                                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        <state key="normal" image="arrow.up.left.and.arrow.down.right" catalog="system"/>
-                                                        <connections>
-                                                            <action selector="didPressEnterFullScreenCustom:" destination="BYZ-38-t0r" eventType="touchUpInside" id="BFF-1A-Fkq"/>
-                                                        </connections>
-                                                    </button>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="XuL-4M-66G">
+                                                        <rect key="frame" x="0.0" y="0.0" width="88" height="44"/>
+                                                        <subviews>
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Npr-1n-EH6">
+                                                                <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
+                                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            </view>
+                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aPw-BL-ChA">
+                                                                <rect key="frame" x="44" y="0.0" width="44" height="44"/>
+                                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                <state key="normal" image="arrow.up.left.and.arrow.down.right" catalog="system"/>
+                                                                <connections>
+                                                                    <action selector="didPressEnterFullScreenCustom:" destination="BYZ-38-t0r" eventType="touchUpInside" id="BFF-1A-Fkq"/>
+                                                                </connections>
+                                                            </button>
+                                                        </subviews>
+                                                    </stackView>
                                                 </subviews>
+                                                <color key="backgroundColor" white="0.33333333329999998" alpha="0.20000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" constant="88" id="EcD-jB-A78"/>
-                                                    <constraint firstAttribute="height" constant="44" id="TPi-3L-9sT"/>
+                                                    <constraint firstAttribute="height" constant="44" id="LWr-Vs-KxQ"/>
+                                                    <constraint firstAttribute="width" constant="88" id="NMh-Cs-2QL"/>
+                                                    <constraint firstAttribute="trailing" secondItem="XuL-4M-66G" secondAttribute="trailing" id="bZu-Dg-xVn"/>
+                                                    <constraint firstAttribute="bottom" secondItem="XuL-4M-66G" secondAttribute="bottom" id="gcK-ju-KdY"/>
+                                                    <constraint firstItem="XuL-4M-66G" firstAttribute="top" secondItem="egB-NY-7Bo" secondAttribute="top" id="m2O-Ok-Uyd"/>
+                                                    <constraint firstItem="XuL-4M-66G" firstAttribute="leading" secondItem="egB-NY-7Bo" secondAttribute="leading" id="n9M-ZO-c7U"/>
                                                 </constraints>
-                                            </stackView>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="8"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="XuL-4M-66G" secondAttribute="trailing" id="OvW-2C-51D"/>
-                                            <constraint firstItem="XuL-4M-66G" firstAttribute="top" secondItem="SXh-XZ-UqY" secondAttribute="top" id="RcY-3h-XpN"/>
-                                            <constraint firstAttribute="bottom" secondItem="XuL-4M-66G" secondAttribute="bottom" id="Vi9-R9-MUB"/>
+                                            <constraint firstAttribute="trailing" secondItem="egB-NY-7Bo" secondAttribute="trailing" id="5oW-Oa-bEc"/>
+                                            <constraint firstItem="egB-NY-7Bo" firstAttribute="top" secondItem="SXh-XZ-UqY" secondAttribute="top" id="TN6-0R-QO7"/>
+                                            <constraint firstAttribute="bottom" secondItem="egB-NY-7Bo" secondAttribute="bottom" id="V6K-W0-kBP"/>
                                         </constraints>
                                     </view>
                                 </subviews>
