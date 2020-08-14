@@ -21,7 +21,7 @@ class AssetPlayer {
     let player: AVPlayer
     
     private let behavior: NowPlayable
-    private var playerState: PlayerState = .stopped
+//    private var playerState: PlayerState = .stopped
     private let allMetaData: [NowPlayableMetaData]
     private let playerItems: [AVPlayerItem]
 
@@ -166,7 +166,8 @@ class AssetPlayer {
     // MARK: - Now Playing information
 
     private func handlePlayerItemChange() {
-        guard playerState != .stopped else { return }
+//        guard playerState != .stopped else { return }
+        guard player.timeControlStatus != .paused else { return }
 
         // Find the item and its' index
         guard let item = player.currentItem else {
@@ -178,34 +179,74 @@ class AssetPlayer {
         // Update Now Playing information
         behavior.handleNowPlayableItemChange(metadata: allMetaData[index])
     }
+
+    // MARK: - Helper functions
+    
+    /**
+     Returns a new time depending on if jumping forward or rewinding back 10 seconds.
+
+     - Parameter direction: Chooses between either forward(+10 seconds) or rewind (-10 seconds).
+     - Returns: An updated time which either will be 10 seconds forward or rewind of current time.
+     */
+    private func getNewTime(by interval: TimeInterval) -> CMTime {
+        let currentTime = player.currentItem?.currentTime() ?? .zero
+        let currentTimeInSecondsPlusDirection = CMTimeGetSeconds(currentTime).advanced(by: interval)
+        return CMTime(value: CMTimeValue(currentTimeInSecondsPlusDirection), timescale: 1)
+    }
 }
 
 // MARK: - Playback controls
 
 extension AssetPlayer {
-    private func play() {
-        switch playerState {
-        case .stopped:
-            playerState = .playing
+    func play() {
+        switch player.timeControlStatus {
+        case .paused:
+            /**
+             If the `currentItem` already has reached its end time, then revert back
+             to the beginning
+             */
+            if (player.currentItem?.currentTime() ?? .zero) >= (player.currentItem?.duration ?? .zero) {
+                player.currentItem?.seek(to: .zero, completionHandler: nil)
+            }
             player.play()
 
             handlePlayerItemChange()
-        case .paused:
-            playerState = .playing
-            player.play()
-        case .playing: break
+        default: player.pause()
         }
     }
 
-    private func pause() {
-
+    func pause() {
+        // If the player is currently playing, then pause.
+        player.pause()
     }
 
-    private func skipForward(by interval: TimeInterval) {
-
+    func skipForward(by interval: TimeInterval) {
+        player.seek(to: getNewTime(by: interval))
     }
 
-    private func skipBackward(by interval: TimeInterval) {
+    func skipBackward(by interval: TimeInterval) {
+        player.seek(to: getNewTime(by: interval))
+    }
 
+    func reverse() {
+        // Play reverse no faster than -2
+        player.rate = max(player.rate - 2, -2)
+    }
+
+    func fastForward() {
+        /**
+        If the `currentItem` already has reached its end time, then revert back
+        to the beginning
+        */
+        if (player.currentItem?.currentTime() ?? .zero) >= (player.currentItem?.duration ?? .zero) {
+            player.currentItem?.seek(to: .zero, completionHandler: nil)
+        }
+        // Play fast forward no faster than 2
+        player.rate = min(player.rate + 2, 2)
+    }
+
+    func adjustTime(with seconds: Double) {
+        let newTime = CMTime(seconds: seconds, preferredTimescale: 600)
+        player.seek(to: newTime, toleranceBefore: .zero, toleranceAfter: .zero)
     }
 }
