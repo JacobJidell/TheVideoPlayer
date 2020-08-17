@@ -19,6 +19,7 @@ enum VideoError: LocalizedError {
         case .invalidPath: return "The path is invalid."
         case .videoDoesNotExist: return "The video does not exist."
         case .undetermined(let error): return "Failed with error: \(error)"
+        case .failedToDecode(let error): return "Failed to decode: \(error) "
         }
     }
 }
