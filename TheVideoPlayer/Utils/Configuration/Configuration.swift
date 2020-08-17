@@ -34,6 +34,12 @@ struct PlayerConfiguration: Configuration {
         self.assets = defaultAssets
         self.commandCollections = defaultCommandCollections
     }
+
+    init (assets: [ConfigurationAsset], behavior: NowPlayable = NowPlayableBehavior.shared) {
+        self.behavior = behavior
+        self.assets = assets
+        self.commandCollections = defaultCommandCollections
+    }
 }
 
 extension PlayerConfiguration {

@@ -151,8 +151,14 @@ class VideoViewController: UIViewController {
 
     private func setupAssetPlayer() {
         do {
+            // Create an asset from the video
+            let asset = ConfigurationAsset(NowPlayableMetaData(urlPath: video.source, title: video.title))
+
+            // Create player configuration
+            let configuration = PlayerConfiguration(assets: [asset])
+
             // Create an AssetPlayer
-            assetPlayer = try AssetPlayer()
+            assetPlayer = try AssetPlayer(configuration: configuration)
 
             /**
             Add/Replace the current player in the `playerView`.

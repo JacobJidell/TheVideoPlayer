@@ -17,13 +17,13 @@ struct Categories: Codable {
 // MARK: - Video
 struct Video: Codable {
     let videoDescription: String
-    let sources: [String]
+    let source: String
     let subtitle: Subtitle
     let thumb, title: String
 
     enum CodingKeys: String, CodingKey {
         case videoDescription = "description"
-        case sources, subtitle, thumb, title
+        case source, subtitle, thumb, title
     }
 }
 
@@ -32,4 +32,3 @@ enum Subtitle: String, Codable {
     case byGarage419 = "By Garage419"
     case byGoogle = "By Google"
 }
-
