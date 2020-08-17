@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  VideoViewController.swift
 //  TheVideoPlayer
 //
 //  Created by Jacob Ahlberg on 2020-08-07.
@@ -11,7 +11,17 @@ import AVFoundation
 import AVKit
 import MediaPlayer
 
-class ViewController: UIViewController {
+class VideoViewController: UIViewController {
+    static func create(video: Video) -> VideoViewController? {
+        guard let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: VideoViewController.identifier) as? VideoViewController else {
+            return nil
+        }
+        vc.video = video
+        return vc
+    }
+
+    static var identifier = "VideoViewController"
+
     @IBOutlet weak var playerView: PlayerView!
     // For airplay
     @IBOutlet weak var videoSettingsContainerView: UIView!
@@ -41,9 +51,18 @@ class ViewController: UIViewController {
     private var shouldRotate = false
     override var shouldAutorotate: Bool { return shouldRotate }
 
-    var assetPlayer: AssetPlayer!
-    var fadeOutTimer: Timer?
-    var tapGesture: UITapGestureRecognizer?
+    // Hide home indicator upon rotation
+    override var prefersHomeIndicatorAutoHidden: Bool { isNavigationBarHidden }
+    private var isNavigationBarHidden = false {
+        didSet {
+            setNeedsUpdateOfHomeIndicatorAutoHidden()
+        }
+    }
+
+    private var video: Video!
+    private var assetPlayer: AssetPlayer!
+    private var fadeOutTimer: Timer?
+    private var tapGesture: UITapGestureRecognizer?
 
     // MARK: - Video key value observers
 
@@ -59,6 +78,18 @@ class ViewController: UIViewController {
         controlView.delegate = self
         setupAirPlay()
         setupAssetPlayer()
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        switch statusBarOrientation {
+        case .landscapeRight:
+            navigationController?.setNavigationBarHidden(false, animated: true)
+            isNavigationBarHidden = false
+        case .portrait:
+            navigationController?.setNavigationBarHidden(true, animated: true)
+            isNavigationBarHidden = true
+        default: break
+        }
     }
 
     @IBAction func didPressEnterFullScreenCustom(_ sender: UIButton) {
@@ -198,7 +229,7 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: ControlDelegate {
+extension VideoViewController: ControlDelegate {
     func didPressPlayPause() {
         assetPlayer.play()
     }

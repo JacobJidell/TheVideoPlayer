@@ -38,7 +38,7 @@ extension VideosViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let video = videos[safe: indexPath.row] else { return UITableViewCell() }
 
-        let cell = UITableViewCell()
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: nil)
         cell.textLabel?.text = video.title
         cell.detailTextLabel?.text = "\(video.videoDescription) \n\n \(video.subtitle)"
         return cell
@@ -48,5 +48,9 @@ extension VideosViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 
 extension VideosViewController: UITableViewDelegate {
-
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let video = videos[safe: indexPath.row] else { return }
+        guard let vc = VideoViewController.create(video: video) else { return }
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
 }
