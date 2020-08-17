@@ -11,14 +11,7 @@ import AVFoundation
 import MediaPlayer
 
 class AssetPlayer {
-
-    enum PlayerState {
-        case playing
-        case stopped
-        case paused
-    }
-
-    let player: AVPlayer
+    var player: AVPlayer?
     
     private let behavior: NowPlayable
     private let allMetaData: [NowPlayableMetaData]
@@ -56,7 +49,7 @@ class AssetPlayer {
 
         // Create a AVPlayer and configure it for external playback.
         self.player = AVPlayer(playerItem: firstItem)
-        self.player.allowsExternalPlayback = configuration.allowsExternalPlayback
+        self.player?.allowsExternalPlayback = configuration.allowsExternalPlayback
 
         var registeredCommands: [NowPlayableCommand] = []
         configuration.commandCollections.forEach({
@@ -72,7 +65,7 @@ class AssetPlayer {
     /**
      Removes all current handlers
      */
-    func removeAllHandlers() {
+    private func removeAllHandlers() {
         onTimeControlStatusUpdate = nil
         onPeriodicTimeUpdate = nil
         onFastForwardUpdate = nil
@@ -80,9 +73,29 @@ class AssetPlayer {
         onStatusUpdate = nil
     }
 
+    private func removeObservers() {
+        playerTimerControlStatusObserver = nil
+        playerItemCanStepForwardObserver = nil
+        playerItemCanStepBackwardObserver = nil
+        playerItemStatusObserver = nil
+        timeObserverToken = nil
+        rateObserver = nil
+    }
+
+    func endSession(_ callback: @escaping () -> Void) throws {
+        removeAllHandlers()
+        removeObservers()
+        player?.pause()
+        player = nil
+        callback()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+            try? self.behavior.handleNowPlayingSessionEnd()
+        })
+    }
+
     func setupSession() throws {
         // Make sure there's a current item
-        guard player.currentItem != nil else {
+        guard player?.currentItem != nil else {
             throw PlayerError.noAssetFound
         }
         // Setup Now Playing session
@@ -98,27 +111,28 @@ class AssetPlayer {
         Add an observer to toggle between pause/play to reflect
         the playback state of the AVPlayer's `timeControlStatus` property.
         */
-        playerTimerControlStatusObserver = player.observe(\AVPlayer.timeControlStatus, options: [.initial, .new]) { [weak self] (player, _) in
+        playerTimerControlStatusObserver = player?.observe(\AVPlayer.timeControlStatus, options: [.initial, .new]) { [weak self] (player, _) in
             guard let self = self else { return }
             DispatchQueue.main.async { self.onTimeControlStatusUpdate?(player) }
         }
 
         let interval = CMTime(value: 1, timescale: 2)
-        timeObserverToken = player.addPeriodicTimeObserver(forInterval: interval, queue: .main, using: { [weak self] (time) in
+        timeObserverToken = player?.addPeriodicTimeObserver(forInterval: interval, queue: .main, using: { [weak self] (time) in
             guard let self = self else { return }
-            DispatchQueue.main.async { self.onPeriodicTimeUpdate?(time, self.player) }
+            guard let player = self.player else { return }
+            DispatchQueue.main.async { self.onPeriodicTimeUpdate?(time, player) }
         })
 
         /**
          Create observeres to the players' properties `canStepForward` and `canStepBackward` to
          enable the corresponding buttons.
          */
-        playerItemCanStepForwardObserver = player.observe(\AVPlayer.currentItem?.canPlayFastForward, options: [.initial, .new]) { [weak self] (player, _) in
+        playerItemCanStepForwardObserver = player?.observe(\AVPlayer.currentItem?.canPlayFastForward, options: [.initial, .new]) { [weak self] (player, _) in
             guard let self = self else { return }
             DispatchQueue.main.async { self.onFastForwardUpdate?(player.currentItem?.canPlayFastForward ?? false)}
         }
 
-        playerItemCanStepBackwardObserver = player.observe(\AVPlayer.currentItem?.canPlayReverse, options: [.initial, .new]) { [weak self] (player, _) in
+        playerItemCanStepBackwardObserver = player?.observe(\AVPlayer.currentItem?.canPlayReverse, options: [.initial, .new]) { [weak self] (player, _) in
             guard let self = self else { return }
             DispatchQueue.main.async { self.onReverseUpdate?(player.currentItem?.canPlayReverse ?? false)}
         }
@@ -127,13 +141,14 @@ class AssetPlayer {
          Create an observer on the player's item property `status` to observe
          state changes as they occurs.
          */
-        playerItemStatusObserver = player.observe(\AVPlayer.currentItem?.status, options: [.initial, .new], changeHandler: { [weak self] (player, _) in
+        playerItemStatusObserver = player?.observe(\AVPlayer.currentItem?.status, options: [.initial, .new], changeHandler: { [weak self] (player, _) in
             guard let self = self else { return  }
+            guard let player = self.player else { return }
             self.handlePlaybackChange()
-            DispatchQueue.main.async { self.onStatusUpdate?(self.player) }
+            DispatchQueue.main.async { self.onStatusUpdate?(player) }
         })
 
-        rateObserver = player.observe(\.rate, options: [.initial], changeHandler: { [weak self] (_, _) in
+        rateObserver = player?.observe(\.rate, options: [.initial], changeHandler: { [weak self] (_, _) in
             guard let self = self else { return }
             self.handlePlaybackChange()
         })
@@ -172,10 +187,10 @@ class AssetPlayer {
     // MARK: - Now Playing information
 
     private func handlePlayerItemChange() {
-        guard player.timeControlStatus != .paused else { return }
+        guard player?.timeControlStatus != .paused else { return }
 
         // Find the item and its' index
-        guard let item = player.currentItem else {
+        guard let item = player?.currentItem else {
             #warning("handle opt out")
             return
         }
@@ -186,10 +201,10 @@ class AssetPlayer {
     }
 
     private func handlePlaybackChange() {
-        guard let currentItem = player.currentItem else { return }
+        guard let currentItem = player?.currentItem else { return }
         guard currentItem.status == .readyToPlay else { return }
 
-        let metaData = NowPlayableDynamicMetaData(rate: player.rate,
+        let metaData = NowPlayableDynamicMetaData(rate: player?.rate ?? 1,
                                                   position: Float(currentItem.currentTime().seconds),
                                                   duration: Float(currentItem.duration.seconds))
         behavior.updateNowPlayingPlayBackInfo(metaData)
@@ -204,7 +219,7 @@ class AssetPlayer {
      - Returns: An updated time which either will be 10 seconds forward or rewind of current time.
      */
     private func getNewTime(by interval: TimeInterval) -> CMTime {
-        let currentTime = player.currentItem?.currentTime() ?? .zero
+        let currentTime = player?.currentItem?.currentTime() ?? .zero
         let currentTimeInSecondsPlusDirection = CMTimeGetSeconds(currentTime).advanced(by: interval)
         return CMTime(value: CMTimeValue(currentTimeInSecondsPlusDirection), timescale: 1)
     }
@@ -214,7 +229,7 @@ class AssetPlayer {
 
 extension AssetPlayer {
     func play() {
-        switch player.timeControlStatus {
+        switch player?.timeControlStatus {
         case .playing:
             pause()
         case .paused:
@@ -222,20 +237,20 @@ extension AssetPlayer {
              If the `currentItem` already has reached its end time, then revert back
              to the beginning
              */
-            if (player.currentItem?.currentTime() ?? .zero) >= (player.currentItem?.duration ?? .zero) {
-                player.currentItem?.seek(to: .zero, completionHandler: nil)
+            if (player?.currentItem?.currentTime() ?? .zero) >= (player?.currentItem?.duration ?? .zero) {
+                player?.currentItem?.seek(to: .zero, completionHandler: nil)
             }
-            player.play()
+            player?.play()
 
             handlePlayerItemChange()
         default:
-            player.pause()
+            player?.pause()
         }
     }
 
     func pause() {
         // If the player is currently playing, then pause.
-        player.pause()
+        player?.pause()
     }
 
     func skip(by interval: TimeInterval) {
@@ -244,7 +259,7 @@ extension AssetPlayer {
 
     func reverse() {
         // Play reverse no faster than -2
-        player.rate = max(player.rate - 2, -2)
+        player?.rate = max((player?.rate ?? 1) - 2, -2)
     }
 
     func fastForward() {
@@ -252,20 +267,20 @@ extension AssetPlayer {
         If the `currentItem` already has reached its end time, then revert back
         to the beginning
         */
-        if (player.currentItem?.currentTime() ?? .zero) >= (player.currentItem?.duration ?? .zero) {
-            player.currentItem?.seek(to: .zero, completionHandler: nil)
+        if (player?.currentItem?.currentTime() ?? .zero) >= (player?.currentItem?.duration ?? .zero) {
+            player?.currentItem?.seek(to: .zero, completionHandler: nil)
         }
         // Play fast forward no faster than 2
-        player.rate = min(player.rate + 2, 2)
+        player?.rate = min((player?.rate ?? 1) + 2, 2)
     }
 
     func adjustTime(with seconds: Double) {
         let newTime = CMTime(seconds: seconds, preferredTimescale: 600)
-        player.seek(to: newTime, toleranceBefore: .zero, toleranceAfter: .zero)
+        player?.seek(to: newTime, toleranceBefore: .zero, toleranceAfter: .zero)
     }
 
     private func seek(by interval: TimeInterval) {
-        player.seek(to: getNewTime(by: interval), toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] isFinished in
+        player?.seek(to: getNewTime(by: interval), toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] isFinished in
             guard let self = self else { return }
             self.handlePlaybackChange()
         }

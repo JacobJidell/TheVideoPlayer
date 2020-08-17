@@ -60,7 +60,7 @@ class VideoViewController: UIViewController {
     }
 
     private var video: Video!
-    private var assetPlayer: AssetPlayer!
+    private var assetPlayer: AssetPlayer?
     private var fadeOutTimer: Timer?
     private var tapGesture: UITapGestureRecognizer?
 
@@ -80,6 +80,17 @@ class VideoViewController: UIViewController {
         setupAssetPlayer()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+
+        try? self.assetPlayer?.endSession { [weak self] in
+            guard let self = self else { return }
+            self.playerView.player = nil
+            self.playerView.playerLayer.removeFromSuperlayer()
+        }
+    }
+
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         switch statusBarOrientation {
         case .landscapeRight:
@@ -95,7 +106,7 @@ class VideoViewController: UIViewController {
     @IBAction func didPressEnterFullScreenCustom(_ sender: UIButton) {
         shouldRotate.toggle()
         UIDevice.current.setValue(statusBarOrientation == .portrait ? UIInterfaceOrientation.landscapeRight.rawValue :
-            UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+                                    UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
         UIViewController.attemptRotationToDeviceOrientation()
 
         sender.setImage(UIImage(systemName: statusBarOrientation == .portrait ? "arrow.up.left.and.arrow.down.right" : "arrow.down.right.and.arrow.up.left"), for: .normal)
@@ -161,17 +172,17 @@ class VideoViewController: UIViewController {
             assetPlayer = try AssetPlayer(configuration: configuration)
 
             /**
-            Add/Replace the current player in the `playerView`.
-            The `AVPlayer` and `AVPlayerItem` are not a visible objects. Use the `AVPlayerLayer`
-            object to manage visual output.
-            */
-            playerView.player = assetPlayer.player
+             Add/Replace the current player in the `playerView`.
+             The `AVPlayer` and `AVPlayerItem` are not a visible objects. Use the `AVPlayerLayer`
+             object to manage visual output.
+             */
+            playerView.player = assetPlayer?.player
 
             /**
              Connect to the handlers. As soon an update occurs the corresponding
              handler will be triggered.
              */
-            assetPlayer.onTimeControlStatusUpdate = { [weak self] player in
+            assetPlayer?.onTimeControlStatusUpdate = { [weak self] player in
                 guard let self = self else { return }
                 /**
                  Configure the image for the `playPauseButton` depending on the
@@ -180,30 +191,30 @@ class VideoViewController: UIViewController {
                 self.controlView.setPlayPauseButtonIcon(with: player)
             }
 
-            assetPlayer.onPeriodicTimeUpdate = { [weak self] (time, player) in
+            assetPlayer?.onPeriodicTimeUpdate = { [weak self] (time, player) in
                 guard let self = self else { return }
                 self.controlView.updateUIForSlider(with: time, player: player)
             }
 
-            assetPlayer.onFastForwardUpdate = { [weak self] playable in
+            assetPlayer?.onFastForwardUpdate = { [weak self] playable in
                 guard let self = self else { return }
                 self.controlView.fastForwardButton.isEnabled = playable
 
             }
 
-            assetPlayer.onReverseUpdate = { [weak self] playable in
+            assetPlayer?.onReverseUpdate = { [weak self] playable in
                 guard let self = self else { return }
                 self.controlView.reverseButton.isEnabled = playable
             }
 
-            assetPlayer.onStatusUpdate = { [weak self] player in
+            assetPlayer?.onStatusUpdate = { [weak self] player in
                 guard let self = self else { return }
                 // Configure the UI for the controlView
                 self.controlView.updateUIForControl(with: player)
             }
 
             // Start session
-            try assetPlayer.setupSession()
+            try assetPlayer?.setupSession()
         } catch {
             print(error)
         }
@@ -237,26 +248,26 @@ class VideoViewController: UIViewController {
 
 extension VideoViewController: ControlDelegate {
     func didPressPlayPause() {
-        assetPlayer.play()
+        assetPlayer?.play()
     }
 
     func didPressFastForward() {
-        assetPlayer.fastForward()
+        assetPlayer?.fastForward()
     }
 
     func didPressReverse() {
-        assetPlayer.reverse()
+        assetPlayer?.reverse()
     }
 
     func didPressForward() {
-        assetPlayer.skip(by: 10)
+        assetPlayer?.skip(by: 10)
     }
 
     func didPressRewind() {
-        assetPlayer.skip(by: -10)
+        assetPlayer?.skip(by: -10)
     }
 
     func didSlideTimer(with seconds: Double) {
-        assetPlayer.adjustTime(with: seconds)
+        assetPlayer?.adjustTime(with: seconds)
     }
 }
