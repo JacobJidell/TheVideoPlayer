@@ -21,7 +21,6 @@ class AssetPlayer {
     let player: AVPlayer
     
     private let behavior: NowPlayable
-//    private var playerState: PlayerState = .stopped
     private let allMetaData: [NowPlayableMetaData]
     private let playerItems: [AVPlayerItem]
 
@@ -31,6 +30,7 @@ class AssetPlayer {
     private var playerItemCanStepBackwardObserver: NSKeyValueObservation?
     private var playerItemStatusObserver: NSKeyValueObservation?
     private var timeObserverToken: Any?
+    private var rateObserver: NSKeyValueObservation?
 
     // Handlers
     var onTimeControlStatusUpdate: ((AVPlayer) -> Void)?
@@ -87,7 +87,7 @@ class AssetPlayer {
         }
         // Setup Now Playing session
         try behavior.handleNowPlayingSessionStart()
-        // Creates observers
+        // Creates control observers
         addObservers()
         // Starts the player
         play()
@@ -129,7 +129,13 @@ class AssetPlayer {
          */
         playerItemStatusObserver = player.observe(\AVPlayer.currentItem?.status, options: [.initial, .new], changeHandler: { [weak self] (player, _) in
             guard let self = self else { return  }
+            self.handlePlaybackChange()
             DispatchQueue.main.async { self.onStatusUpdate?(self.player) }
+        })
+
+        rateObserver = player.observe(\.rate, options: [.initial], changeHandler: { [weak self] (_, _) in
+            guard let self = self else { return }
+            self.handlePlaybackChange()
         })
     }
 
@@ -143,12 +149,12 @@ class AssetPlayer {
             guard let event = event as? MPSkipIntervalCommandEvent else {
                 return .commandFailed
             }
-            skipForward(by: event.interval)
+            seek(by: event.interval)
         case .skipBackward:
             guard let event = event as? MPSkipIntervalCommandEvent else {
                 return .commandFailed
             }
-            skipBackward(by: event.interval)
+            seek(by: event.interval)
         }
         return .success
     }
@@ -179,6 +185,16 @@ class AssetPlayer {
         behavior.handleNowPlayableItemChange(metadata: allMetaData[index])
     }
 
+    private func handlePlaybackChange() {
+        guard let currentItem = player.currentItem else { return }
+        guard currentItem.status == .readyToPlay else { return }
+
+        let metaData = NowPlayableDynamicMetaData(rate: player.rate,
+                                                  position: Float(currentItem.currentTime().seconds),
+                                                  duration: Float(currentItem.duration.seconds))
+        behavior.updateNowPlayingPlayBackInfo(metaData)
+    }
+
     // MARK: - Helper functions
     
     /**
@@ -199,6 +215,8 @@ class AssetPlayer {
 extension AssetPlayer {
     func play() {
         switch player.timeControlStatus {
+        case .playing:
+            pause()
         case .paused:
             /**
              If the `currentItem` already has reached its end time, then revert back
@@ -210,7 +228,8 @@ extension AssetPlayer {
             player.play()
 
             handlePlayerItemChange()
-        default: player.pause()
+        default:
+            player.pause()
         }
     }
 
@@ -219,12 +238,8 @@ extension AssetPlayer {
         player.pause()
     }
 
-    func skipForward(by interval: TimeInterval) {
-        player.seek(to: getNewTime(by: interval))
-    }
-
-    func skipBackward(by interval: TimeInterval) {
-        player.seek(to: getNewTime(by: interval))
+    func skip(by interval: TimeInterval) {
+        seek(by: interval)
     }
 
     func reverse() {
@@ -247,5 +262,12 @@ extension AssetPlayer {
     func adjustTime(with seconds: Double) {
         let newTime = CMTime(seconds: seconds, preferredTimescale: 600)
         player.seek(to: newTime, toleranceBefore: .zero, toleranceAfter: .zero)
+    }
+
+    private func seek(by interval: TimeInterval) {
+        player.seek(to: getNewTime(by: interval), toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] isFinished in
+            guard let self = self else { return }
+            self.handlePlaybackChange()
+        }
     }
 }

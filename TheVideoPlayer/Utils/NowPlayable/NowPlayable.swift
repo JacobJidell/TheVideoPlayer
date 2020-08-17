@@ -50,6 +50,7 @@ extension NowPlayable {
         })
     }
 
+    // Update current player item metadata
     func updateNowPlayingMetaData(_ metaData: NowPlayableMetaData) {
         var nowPlayingInfo: [String: Any] = [:]
         nowPlayingInfo[MPNowPlayingInfoPropertyAssetURL] = metaData.assetURL
@@ -58,6 +59,7 @@ extension NowPlayable {
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
 
+    // Update current player item dynamic metadata (rate, duration, etc.)
     func updateNowPlayingPlayBackInfo(_ metaData: NowPlayableDynamicMetaData) {
         let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
         var nowPlayingInfo = nowPlayingInfoCenter.nowPlayingInfo ?? [String: Any]()

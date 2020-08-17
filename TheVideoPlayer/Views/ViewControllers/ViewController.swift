@@ -212,11 +212,11 @@ extension ViewController: ControlDelegate {
     }
 
     func didPressForward() {
-        assetPlayer.skipForward(by: 10)
+        assetPlayer.skip(by: 10)
     }
 
     func didPressRewind() {
-        assetPlayer.skipBackward(by: -10)
+        assetPlayer.skip(by: -10)
     }
 
     func didSlideTimer(with seconds: Double) {
