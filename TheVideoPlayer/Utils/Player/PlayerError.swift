@@ -8,7 +8,8 @@
 
 import Foundation
 
-enum PlayerError: Error {
+enum PlayerError: LocalizedError {
     case notPlayable
+    case noAssetFound
     case failed
 }
